@@ -2,6 +2,8 @@ import maths
 import numpy as np
 import bentests as bt
 from layer import *
+from network import Network
+from DataHandler import *
 
 class Ignore(bt.testCase):
 	def testRelu(self):
@@ -52,7 +54,52 @@ class Layers(bt.testCase):
 		)
 		)
 
+class NetworkTests(bt.testCase):
+	def testInputLayerActivations(self):
+		network = Network((1,2))
+		bt.assertEquals(network.layers[0].activations, np.array([[0.0]], dtype=float))
+
+	def testHiddenLayerActivations(self):
+		network = Network((1,2))
+		bt.assertEquals(network.layers[1].activations, np.array([[0.0], [0.0]], dtype=float))
+
+	def testHiddenLayerWeights(self):
+		network = Network((3,2))
+		bt.assertEquals(
+			network.layers[1].weights,
+			np.array([
+				[0.0, 0.0, 0.0],
+				[0.0, 0.0, 0.0]
+			])	
+		)
+
+class DataHandlerTests(bt.testCase):
+	def testSampleInputType(self):
+		data_handler = DataHandler(training_size=10,testing_size=10)
+		data_handler.write_data()
+		samples = data_handler.read_samples("training")
+		bt.assertEquals(type(samples[0].inputs), tuple)
+	
+	def testSampleOutputType(self):
+		data_handler = DataHandler(training_size=10,testing_size=10)
+		data_handler.write_data()
+		samples = data_handler.read_samples("testing")
+		bt.assertEquals(type(samples[0].result), float)		
+
+	def testSampleOutputRange(self):
+		data_handler = DataHandler(training_size=10,testing_size=10)
+		data_handler.write_data()
+		samples = data_handler.read_samples("testing")
+		bt.assertEquals(samples[0].result == 0.0 or samples[0].result == 1.0, True)
+
+
+
+
+
+
 bt.test_all(
 	Maths,
-	Layers
+	Layers,
+	NetworkTests,
+	DataHandlerTests
 )

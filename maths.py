@@ -1,16 +1,28 @@
 import numpy as np
+from itertools import islice
 
-
-# sandboxing
 def relu(numpyArray):
-    return np.maximum(0.0, numpyArray)
+	return np.maximum(0.0, numpyArray)
 
+def to_bit(n:float) -> bool:
+	if n < 0 or n > 1:
+		raise ValueError("n must be from 0 - 1")
+	elif n >= 0.5:
+		return True
+	else: 
+		return False
 
-# weights = np.array([[1, 2], [3, 4]])
-# prev_activations = np.array([[0.1], [0.2]])
-# biases = np.array([[-1], [2]])
-# newActivations = relu(np.dot(weights, prev_activations) + biases)
-# print(newActivations)
+def xor(a:float,b:float) -> float:
+	a = to_bit(a)
+	b = to_bit(b)
+	if (a and not b) or (b and not a):
+		return 1.0
+	else:
+		return 0.0
 
-
-threeDmatrix = np.zeros((1, 1, 1))
+def batched(iterable, n):
+    if n < 1:
+        raise ValueError('n must be at least one')
+    it = iter(iterable)
+    while batch := tuple(islice(it, n)):
+        yield batch

@@ -1,4 +1,5 @@
 import numpy as np
+from maths import *
 
 class Layer:
 	def __init__(self, layer_size: int | None = None):
@@ -14,3 +15,15 @@ class WeightedLayer(Layer):
 		self.weights: np.ndarray = np.zeros((self.size, prevLayer.size), dtype=float)
 		self.biases: np.ndarray = np.zeros((self.size), dtype=float)
 	
+	def updateActivations(self, previous_layer: Layer):
+		self.activations = relu(np.dot(self.weights, previous_layer.activations) + self.biases)
+	
+	def storeWeightsAndBiases(self):
+		...
+
+class InputLayer(Layer):
+	def __init__(self, layer_size: int | None = None):
+		super().__init__(layer_size = layer_size)
+	
+	def getInputActivations(self):
+		...

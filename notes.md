@@ -36,17 +36,23 @@ okay no im doing it oop
 
 
 
+not sure what format to use for storing the weights and biases for later.
 
+option one:
 
+data/
+├─ weights/
+│  ├─ layer 1.txt
+│  ├─ ...
+│  ├─ layer n.txt
+├─ biases/
+│  ├─ layer 1.txt
+│  ├─ ...
+│  ├─ layer n.txt
 
-``` python
-dataset = [sample]*200
-batchSize = 5
+option two:
 
-batches = divide(dataset,batchSize) # len(batches) = batchSize, len(batches[0]) = 200/5
-epochs = 1000
-for i in range(epochs):
-	for trainingBatch in batches:
-		#the number of times this runs is called the number of iterations for one epoch
- 		updateWeightsAndBiases(trainingBatch)
-```
+data/
+├─ layer 1
+│  ├─ weights.txt
+│  ├─ biases.txt
