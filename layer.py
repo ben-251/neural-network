@@ -12,7 +12,7 @@ class WeightedLayer(Layer):
 	def __init__(self,prevLayer: Layer, layer_size: int | None = None):
 		# rememer its not x,y but "number of rows x number of columns"
 		super().__init__(layer_size=layer_size)
-		self.weights: np.ndarray = np.zeros((self.size, prevLayer.size), dtype=float)
+		self.weights: np.ndarray = np.zeros((self.size, prevLayer.size), dtype=float) #TODO: make Weights and biases randomised
 		self.biases: np.ndarray = np.zeros((self.size), dtype=float)
 	
 	def updateActivations(self, previous_layer: Layer):

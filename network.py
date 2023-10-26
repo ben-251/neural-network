@@ -19,8 +19,11 @@ class Network:
 			if i == 0:
 				self.layers.append(Layer(layer_size=size))
 			else:
-				self.layers.append(WeightedLayer(self.layers[-1], layer_size=size)) # i dont think this will cause any indexing issues but thats what tests are for
+				self.layers.append(WeightedLayer(self.layers[-1], layer_size=size)) # watch out for index problems
 
 	def feedforward(self):
 		for prevLayer, currentLayer in pairwise(self.layers):
 			currentLayer.updateActivations(prevLayer)
+	
+	def backpropagate(self):
+		raise NotImplementedError

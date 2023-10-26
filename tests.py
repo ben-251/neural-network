@@ -77,24 +77,20 @@ class DataHandlerTests(bt.testCase):
 	def testSampleInputType(self):
 		data_handler = DataHandler(training_size=10,testing_size=10)
 		data_handler.write_data()
-		samples = data_handler.read_samples("training")
+		samples = data_handler.read_samples(DataType.TESTING)
 		bt.assertEquals(type(samples[0].inputs), tuple)
 	
 	def testSampleOutputType(self):
 		data_handler = DataHandler(training_size=10,testing_size=10)
 		data_handler.write_data()
-		samples = data_handler.read_samples("testing")
+		samples = data_handler.read_samples(DataType.TRAINING)
 		bt.assertEquals(type(samples[0].result), float)		
 
 	def testSampleOutputRange(self):
 		data_handler = DataHandler(training_size=10,testing_size=10)
 		data_handler.write_data()
-		samples = data_handler.read_samples("testing")
+		samples = data_handler.read_samples(DataType.TRAINING)
 		bt.assertEquals(samples[0].result == 0.0 or samples[0].result == 1.0, True)
-
-
-
-
 
 
 bt.test_all(

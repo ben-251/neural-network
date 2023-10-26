@@ -1,0 +1,3 @@
+- Learning rate: undecided 
+- activation function (nonlinearity): relu
+- cost function: mse cuz no reason not to
