@@ -10,5 +10,3 @@ for example:
 Is this quite ambitious? Maybe. 
 Will it be fun and full of mathsy hurdles to overcome? Absolutely.
 So we'll see how this goes.
-
-(p.s at the moment all this code is just ideas im throwing at a wall.)
