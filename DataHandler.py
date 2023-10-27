@@ -1,7 +1,10 @@
 import random
-from typing import Tuple, List
+from typing import Dict, Tuple, List
 from logic import *
 from enum import Enum
+import json
+from json import JSONEncoder
+import numpy as np
 
 class Sample:
 	'''
@@ -14,8 +17,8 @@ class Sample:
 		self.result = result
 
 class DataType(Enum):
-	TESTING = "data/test_data.txt"
-	TRAINING = "data/training_data.txt"
+	TESTING = "data/test_data.json"
+	TRAINING = "data/training_data.json"
 
 class DataHandler:
 	'''
@@ -29,7 +32,7 @@ class DataHandler:
 		self.training_size = training_size
 		self.testing_size = testing_size
 
-	def generate_data(self) -> None:
+	def create_data(self) -> None:
 		self.training_data = self.generate_samples(self.training_size)
 		self.testing_data = self.generate_samples(self.testing_size)	
 	
@@ -47,11 +50,27 @@ class DataHandler:
 	
 	def write_samples(self, data: List[Sample], isTraining:bool|None=None) -> None:
 		data_type = DataType.TRAINING if isTraining else DataType.TESTING
+		data_as_json = self.data_to_json(data)
 		with open(data_type.value, "w") as f:
-			for sample in data:
-				new_entry = f"{[input_ for input_ in sample.inputs]}"[1:-1] + f"\n{sample.result}\n"
-				f.write(new_entry)
-	
+			f.write(data_as_json)
+
+
+	def data_to_json(self, data: List[Sample]) -> str:
+		samples = []
+		for i, sample in enumerate(data):
+			sample_as_dict = {
+				"id": i,
+				"inputs": [],
+				"output": 0.0
+			}
+
+			for input_ in sample.inputs:
+				sample_as_dict["inputs"].append(input_)
+
+			sample_as_dict["output"] = sample.result
+			samples.append(sample_as_dict)
+		return json.dumps(samples,indent=4)
+
 	def read_samples(self, isTesting: bool|None=None) -> List[Sample]:
 		'''
 		Default value of isTesting is effectively false
@@ -59,9 +78,23 @@ class DataHandler:
 		samples = []
 		data_type = DataType.TESTING if isTesting else DataType.TRAINING
 		with open(data_type.value, "r") as f:
-			for input_line, output_line in batched(f,2):
-				inputs = tuple([float(input_number) for input_number in input_line.strip().split(", ")])
-				output_line = float(output_line.strip())
-				samples.append(Sample(inputs, output_line))
+			data = json.load(f)
+			for data_sample in data:
+				samples.append(Sample(data_sample["inputs"], data_sample["output"]))
 		return samples
+
+	def encode_matrix(self, matrix) -> str:
+		numpyData = {"array": matrix}
+		return json.dumps(numpyData, cls=NumpyArrayEncoder)
+
+	def decode_matrix(self,json_object) -> np.ndarray:
+		decodedArrays = json.loads(json_object)
+		return np.asarray(decodedArrays["array"])
+		
+class NumpyArrayEncoder(JSONEncoder):
+	def default(self, obj):
+		if isinstance(obj, np.ndarray):
+			return obj.tolist()
+		return JSONEncoder.default(self, obj)
+
 
