@@ -1,5 +1,6 @@
 import numpy as np
-from maths import *
+from DataHandler import DataHandler
+from logic import *
 
 class Layer:
 	def __init__(self, layer_size: int | None = None):
@@ -9,6 +10,12 @@ class Layer:
 		self.activations: np.ndarray = np.zeros((layer_size,1))
 
 class WeightedLayer(Layer):	
+	'''
+	The class for all non-input layers.
+	Formed of weights (matrix), activations (vector), and biases (vector)
+	
+	activations are updated in the typical fashion.
+	'''
 	def __init__(self,prevLayer: Layer, layer_size: int | None = None):
 		# rememer its not x,y but "number of rows x number of columns"
 		super().__init__(layer_size=layer_size)
@@ -27,3 +34,4 @@ class InputLayer(Layer):
 	
 	def getInputActivations(self):
 		...
+		

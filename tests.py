@@ -1,4 +1,4 @@
-import maths
+import logic
 import numpy as np
 import bentests as bt
 from layer import *
@@ -6,12 +6,21 @@ from network import Network
 from DataHandler import *
 
 class Ignore(bt.testCase):
+	...
+
+class Maths(bt.testCase):
 	def testRelu(self):
 		startingMatrix = np.array([[1, -2], [3, 0]])
-		result = maths.relu(startingMatrix)
-		bt.assertEquals(result, np.array([[1, 0], [3, 0]])) # OOH not so simple, numpy needs special treatment. 
+		result = logic.relu(startingMatrix)
+		bt.assertEquals(result, np.array([[1, 0], [3, 0]])) 
 
-class Maths(bt.testCase): ...
+	def testToBitZero(self):
+		n = to_bit(0.1)
+		bt.assertEquals(n, 0.0)
+
+	def testToBitHalfway(self):
+		n = to_bit(0.5)
+		bt.assertEquals(n, 1)
 
 class Layers(bt.testCase):
 	def testLayerSizeGiven(self):
@@ -48,18 +57,19 @@ class Layers(bt.testCase):
 	def testWeightedLayerWeights(self):
 		input_layer = Layer(layer_size=2)
 		first_hidden_layer = WeightedLayer(prevLayer=input_layer, layer_size=4)
-		bt.assertEquals(first_hidden_layer.weights,
-		np.array(
-			[[0.0, 0.0], [0.0 , 0.0], [0.0, 0.0], [0.0, 0.0]]
-		)
+		bt.assertEquals(
+			first_hidden_layer.weights,
+			np.array(
+				[[0.0, 0.0], [0.0 , 0.0], [0.0, 0.0], [0.0, 0.0]]
+			)
 		)
 
 class NetworkTests(bt.testCase):
-	def testInputLayerActivations(self):
+	def testInputLayerActivationTypes(self):
 		network = Network((1,2))
 		bt.assertEquals(network.layers[0].activations, np.array([[0.0]], dtype=float))
 
-	def testHiddenLayerActivations(self):
+	def testHiddenLayerActivationTypes(self):
 		network = Network((1,2))
 		bt.assertEquals(network.layers[1].activations, np.array([[0.0], [0.0]], dtype=float))
 
@@ -73,29 +83,45 @@ class NetworkTests(bt.testCase):
 			])	
 		)
 
+	def testFeedForward(self):
+		...
+	
+	def testInputLayer(self):
+		network = Network((2,3,4))
+		batch_size = 4
+		data_handler = DataHandler()
+		sample = data_handler.read_samples()[0]
+		network.setInputLayer(sample.inputs)
+		bt.assertEquals(network.layers[0].activations, np.array([[0.15077396917696806],[0.16554892655204556]]))
+
+
 class DataHandlerTests(bt.testCase):
+	'''
+	DON'T RUN IF YOU KEEP THE TEST DATA UNCHANGED
+	'''
 	def testSampleInputType(self):
 		data_handler = DataHandler(training_size=10,testing_size=10)
+		data_handler.generate_data()
 		data_handler.write_data()
-		samples = data_handler.read_samples(DataType.TESTING)
+		samples = data_handler.read_samples()
 		bt.assertEquals(type(samples[0].inputs), tuple)
 	
 	def testSampleOutputType(self):
 		data_handler = DataHandler(training_size=10,testing_size=10)
+		data_handler.generate_data()
 		data_handler.write_data()
-		samples = data_handler.read_samples(DataType.TRAINING)
+		samples = data_handler.read_samples()
 		bt.assertEquals(type(samples[0].result), float)		
 
 	def testSampleOutputRange(self):
 		data_handler = DataHandler(training_size=10,testing_size=10)
+		data_handler.generate_data()
 		data_handler.write_data()
-		samples = data_handler.read_samples(DataType.TRAINING)
+		samples = data_handler.read_samples()
 		bt.assertEquals(samples[0].result == 0.0 or samples[0].result == 1.0, True)
-
 
 bt.test_all(
 	Maths,
 	Layers,
 	NetworkTests,
-	DataHandlerTests
 )
