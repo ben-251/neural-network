@@ -40,12 +40,29 @@ Cost for a single training example, $C_0$ will be the sum of the MSE costs for e
 since for one neuron layers, $\partial C / \partial a^{(L-1)} = w^{(L)} \times$ `deriv_non_lin`$(Z^{(L)}) \times 2(a^{(L)}-y)$, then for multiple neurons, I can just either use $2(a^{(L)}-y)$ or the sum calculation for $\partial C / \partial a^{(l)}$, depending on whether there are multiple activations feeding into $a^{(L)}$. Putting that all together, the derivative works out to be the product of the following:
 1. $\partial z_j / \partial w_{jk}$ — activation k on layer L-1.
 2. $\partial a_j /\partial z_j$ — derivative of non_lin of weighted sum, z_j for layer L
-3. $\partial C_0 / \partial a_j$ — One of:
-
-	a. the sum of all the derivative computations (the cost function w.r.t each weight to j from k in the next layer (L+1))
+3. $\partial C_0 / \partial a_j$ — One of:   
+	a. the sum of all the derivative computations (the cost function w.r.t each weight to j from k in the next layer (L+1))   
 	b.  $2(a-y)$
 
-the question remains, though, of how to get these values from vectors. For example, when finding deriv_non_lin(z_j), we'd have to recompute wa+b for j, but without the non_lin_function. and functions like relu wouldn't have an inverse, so i can't just invert the non_linearity on the activations. I'll come back to this
+the question remains, though, of how to get these values from vectors. For example, when finding deriv_non_lin(z_j), we'd have to recompute wa+b for j, but without the non_lin_function. and functions like relu wouldn't have an inverse, so i can't just invert the non_linearity on the activations. I'll come back to this. For now I need to make sure that the calculations actually account for every weight. I also need to compute the gradient for the biases
+
+#### Part 4: Derivative w.r.t each bias in layer L (j):
+$C = (a^{(L)}-y)^2;\ a^{(L)} = N(z);\ z = wa^{(L-1)}+b$, where N is the nonlinearity function, giving:
+$
+\begin{equation}
+\begin{align*}
+	&\frac{\partial C}{\partial b_j} = \frac{\partial C}{\partial a_j} \frac{\partial a_j}{\partial z_j} \frac{\partial z_j}{\partial b_j} \\[1.5em]
+	&\frac{\partial C}{\partial a_j} = 2(a-y) \text{(or the sum above)} \\[1em]
+	&\frac{\partial a_j}{\partial z_j} = N'(z_j) \\[1em]
+	&\frac{\partial z_j}{\partial b_j} = 1 \\[1em]
+	&\frac{\partial C}{\partial b_j} =  N'(z_j) \times 2(a-y) \text{(or the obvious)}
+\end{align*}
+\end{equation}$
+
+In python that might look something like:
+```python
+cost_wrt_bias(j) = N_prime(z[j]) * cost_wrt_activation(j) # or something
+```
 
 
 
