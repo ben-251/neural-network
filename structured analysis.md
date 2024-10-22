@@ -48,8 +48,7 @@ the question remains, though, of how to get these values from vectors. For examp
 
 #### Part 4: Derivative w.r.t each bias in layer L (j):
 $C = (a^{(L)}-y)^2;\ a^{(L)} = N(z);\ z = wa^{(L-1)}+b$, where N is the nonlinearity function, giving:
-$$
-\begin{equation}
+$$\begin{equation}
 \begin{align*}
 	&\frac{\partial C}{\partial b_j} = \frac{\partial C}{\partial a_j} \frac{\partial a_j}{\partial z_j} \frac{\partial z_j}{\partial b_j} \\[1.5em]
 	&\frac{\partial C}{\partial a_j} = 2(a-y) \text{(or the sum above)} \\[1em]
