@@ -2,6 +2,8 @@
 
 ## Goal
 To train a simple artificial neural network to `xor` two floats.
+The simplicity is solely to make training data easy to generate, and to make success easy to determine.
+I could make the network do this with one output neuron, but I want to see if it ends up with a pattern where if one is highly active, the other is necessarily inactive, so I will use two output neurons, one representing 1, and the other representing 0. This also lets me ensure that my program can extend to more complicated outputs, since a single output neuron might lead to accidental simplifications.
 
 for example:
 0.54, 0.2 -> 1, since `xor(1, 0) = 1`
