@@ -5,10 +5,10 @@ from layer import *
 from network import Network
 from DataHandler import *
 
-class Ignore(bt.testCase):
+class Ignore(bt.testGroup):
 	...
 
-class Maths(bt.testCase):
+class Maths(bt.testGroup):
 	def testRelu(self):
 		startingMatrix = np.array([[1, -2], [3, 0]])
 		result = logic.relu(startingMatrix)
@@ -22,7 +22,7 @@ class Maths(bt.testCase):
 		n = to_bit(0.5)
 		bt.assertEquals(n, 1)
 
-class Layers(bt.testCase):
+class Layers(bt.testGroup):
 	def testLayerSizeGiven(self):
 		new_layer = Layer(layer_size=3)
 		bt.assertEquals(new_layer.size,3)
@@ -73,7 +73,7 @@ class Layers(bt.testCase):
 		bt.assertEquals(network.layers[1].activations, np.array([[0.0],[0.0],[0.0]])) # cuz if w and b is 0, aw+b = 0 for all a
 
 
-class NetworkTests(bt.testCase):
+class NetworkTests(bt.testGroup):
 	def testInputLayerActivationTypes(self):
 		network = Network((1,2), isZeroed=True)
 		bt.assertEquals(network.layers[0].activations, np.array([[0.0]], dtype=float))
@@ -132,7 +132,7 @@ class NetworkTests(bt.testCase):
 
 
 
-class DataHandlerTests(bt.testCase):
+class DataHandlerTests(bt.testGroup):
 	'''
 	DON'T RUN IF YOU KEEP THE TEST DATA UNCHANGED
 	'''
