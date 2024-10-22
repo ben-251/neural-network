@@ -41,10 +41,11 @@ since for one neuron layers, $\partial C / \partial a^{(L-1)} = w^{(L)} \times$ 
 1. $\partial z_j / \partial w_{jk}$ — activation k on layer L-1.
 2. $\partial a_j /\partial z_j$ — derivative of non_lin of weighted sum, z_j for layer L
 3. $\partial C_0 / \partial a_j$ — One of:
-	3.a. the sum of all the derivative computations (the cost function w.r.t each weight to j from k in the next layer (L+1))
-	3.b. 
 
-the question remains, though, of how to get this from vectors. For example, when finding deriv_non_lin(z_j), we'd have to, what, recompute wa+b for j, without the non_lin_function? that'd be messy. and functions like relu wouldn't have an inverse, so i can't just invert the activations partially. I'll come back to this
+	a. the sum of all the derivative computations (the cost function w.r.t each weight to j from k in the next layer (L+1))
+	b.  $2(a-y)$
+
+the question remains, though, of how to get these values from vectors. For example, when finding deriv_non_lin(z_j), we'd have to recompute wa+b for j, but without the non_lin_function. and functions like relu wouldn't have an inverse, so i can't just invert the non_linearity on the activations. I'll come back to this
 
 
 
