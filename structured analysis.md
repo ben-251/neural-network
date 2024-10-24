@@ -1,6 +1,7 @@
 I don't intend on freestyling this, giving up halfway, then leaving crumbs for my future self to pick up. Not this time, at least. so this is a step-by-step plan, which I will of course expand a bunch of times. I'm doing this primarily because the "index-chasing" nature of this project will likely obscure the real complexity, so I want as much control over my inevitable confusion as possible. 
 
 # Network structure
+## Ideas
 let `n` be the length of layer_a, and `k` be the length of layer_a+1:
 - Layers: never written explicitly as a property.
 	- previous activations: nx1 (column vec)
@@ -14,6 +15,14 @@ let `n` be the length of layer_a, and `k` be the length of layer_a+1:
 (that said, I think since the backprop process does look back at previous layers 
 as part of the chain rule calculation, it might be necessary to store all the activations after all)
 
+## Structure
+class Network:
+	weights, list of kxn matrices, where k is the length of layer L, and n is the length of layer L-1
+	biases, list of np nx1 vectors
+	activations: list of np nx1 vectors, computed as non_lin(w*a_prev + b)
+
+
+
 # Levels of training process
 ## Level 0:
 1. Split training data into minibatches to stochastically decrease the gradient
@@ -23,7 +32,7 @@ as part of the chain rule calculation, it might be necessary to store all the ac
 (not nesting numbering because that would get lengthy)
 1. Split training data into minibatches to stochastically decrease the gradient
 2. For each mini batch:
-	2.1. Feedforward (counter-intuitively, this doesn't have to actually happen _to_ the network. It just has to compute all the activations to then use to backpropagate. It's just a function. So a `network` object doesn't need an `activations` property, for example. // perhaps, I'll have to expand the calculation to see that this idea works)
+	2.1. Feedforward (counter-intuitively, this doesn't have to actually happen _to_ the network. It just has to compute all the activations to then use to backpropagate. It's just a function. So a `network` object doesn't need an `activations` property, for example. // perhaps, I'll have to expand the calculation to see that this idea works) // what I should have said is that I don't need `layer` objects/properties/classes. not that I don't need the activations. Not quite sure what happened with my logic there.
 	2.2. Find the average {derivative of the cost function w.r.t each of the weights and biases} across all training examples within that minibatch 
 	2.3. Update each weight and bias by that derivative
 
@@ -34,6 +43,9 @@ as part of the chain rule calculation, it might be necessary to store all the ac
 
 #### part 2: feed-forward
 1. to generate the nth vector of activations, simply compute `non_lin(w*a_{n-1} + b)`, where `non-lin(v)` applies the non-linearity to each entry, and `n >= 1` (the layers are zero indexed). repeat until you've reached the output neurons
+
+1. start by taking in the inputs as a column vector, this will be the first layer in our activations list
+2. to compute the next one, N(w * a + b), where a is the previous vector (initially input)
 
 #### part 3: the derivative with respect to each weight in layer L (to j from k):
 Cost for a single training example, $C_0$ will be the sum of the MSE costs for each j 

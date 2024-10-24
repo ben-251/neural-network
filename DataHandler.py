@@ -92,9 +92,9 @@ class DataHandler:
 		return np.asarray(decodedArrays["array"])
 		
 class NumpyArrayEncoder(JSONEncoder):
-	def default(self, obj):
-		if isinstance(obj, np.ndarray):
-			return obj.tolist()
-		return JSONEncoder.default(self, obj)
+	def default(self, o):
+		if isinstance(o, np.ndarray):
+			return o.tolist()
+		return JSONEncoder.default(self, o)
 
 
