@@ -1,5 +1,5 @@
 from itertools import pairwise
-from typing import Iterable, Optional
+from typing import Iterable, List, Optional
 from DataHandler import *
 from layer import *
 import numpy as np
@@ -61,7 +61,7 @@ class Network:
 			biases.append(random_biases)
 		return biases
 
-	def set_input_layer(self, inputs:List[float]):
+	def set_input_layer(self, inputs:Iterable[float]):
 		self.activations[0] = np.array(inputs).reshape(-1,1)
 
 	def storeWeightsAndBiases(self):

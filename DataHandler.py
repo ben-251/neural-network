@@ -12,7 +12,7 @@ class Sample:
 	inputs = (0.234, 0.892)
 	result = 1.0
 	'''
-	def __init__(self, inputs: Tuple[float, ...], result: float):
+	def __init__(self, inputs: List[float], result: float):
 		self.inputs = inputs
 		self.result = result
 
@@ -39,10 +39,13 @@ class DataHandler:
 	def generate_samples(self, n) -> List[Sample]:
 		samples: List[Sample] = []
 		for _ in range(n):
-			inputs = random.random(), random.random()
+			inputs = [self.get_random(), self.get_random()]
 			answer = xor(inputs[0], inputs[1])
-			samples.append(Sample(inputs,answer))
+			samples.append(Sample(inputs, answer))
 		return samples
+
+	def get_random(self):
+		return round(random.random(), 5)
 	
 	def write_data(self) -> None:
 		self.write_samples(self.training_data, isTraining=True)
@@ -80,7 +83,8 @@ class DataHandler:
 		with open(data_type.value, "r") as f:
 			data = json.load(f)
 			for data_sample in data:
-				samples.append(Sample(data_sample["inputs"], data_sample["output"]))
+				inputs:List[float] = data_sample["inputs"]
+				samples.append(Sample(inputs, data_sample["output"]))
 		return samples
 
 	def encode_matrix(self, matrix) -> str:
