@@ -7,7 +7,7 @@ let `n` be the length of layer_a, and `k` be the length of layer_a+1:
 	- previous activations: nx1 (column vec)
 	- next activations: kx1 (col vec)
 - weights: kxn matrix, where n
-- biases: nx1 (column vector)
+- biases: kx1 (column vector)
 (quick check: kxn x nx1 + kx1 -> kx1)
 - nonlin function (and it's derivative): just a property abstracted (with default of Relu)
 

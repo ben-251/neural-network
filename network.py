@@ -12,6 +12,13 @@ class Network:
 
 		The learning rate determines the size of each step of the gradient descent during backpropagation
 		`isTesting` sets up the network to train or test the model. default behaviour is training
+
+		biases[x] represents the biases applied in activations from layer x, to compute layer x+1.
+		weights[x] represents the weights applied in activations from layer x, to compute layer x+1.
+		for a (2,5,1) network:
+			biases[0] is a 5x1 column vector, and
+			weights[0] is a 5x2 matrix. 
+			a[1] = w[0]*a[0] + b[0] (5x2) * (2x1) + (5x1)
 		'''
 		self.initialise_layers(layer_sizes,inputNeurons,isZeroed=isZeroed)
 		self.learning_rate = learning_rate
@@ -26,17 +33,21 @@ class Network:
 		if inputNeurons is None:
 			inputNeurons = [0.0]*layer_sizes[0]
 
-		self.weights = self.generate_weights(layer_sizes)
-		self.biases = self.generate_biases(layer_sizes)
+		self.weights = self.generate_weights(layer_sizes, isZeroed)
+		self.biases = self.generate_biases(layer_sizes, isZeroed)
 		self.activations = self.initialise_activations(layer_sizes, inputNeurons)
 
-	def generate_weights(self, layer_sizes: List[int]):
+	def generate_weights(self, layer_sizes: List[int], isZeroed:bool):
 		weights = []
 		for previous_layer_size, next_layer_size in pairwise(layer_sizes):
 			# to next (k) from prev (n), so kxn (by "structured analysis.md") 
-			random_weights = np.random.randint(0, 10, size=(
-				next_layer_size, previous_layer_size
-			))
+			if not isZeroed:
+				random_weights = np.random.randint(0, 10, size=(
+					next_layer_size, previous_layer_size
+				))
+			else:
+				random_weights = np.zeros((next_layer_size, previous_layer_size))
+
 			weights.append(random_weights)
 		return weights
 
@@ -49,15 +60,18 @@ class Network:
 			# I feel like yes, but then in test data when does it start training officially. 
 			# I'll need to look at the rest of the code. For now i'll assume no, since that's less work.
 			new_activations = np.zeros(
-				layer_size
+				(layer_size, 1)
 			)
 			activations.append(new_activations)
 		return activations
 
-	def generate_biases(self, layer_sizes: List[int]) -> List[np.ndarray]:
+	def generate_biases(self, layer_sizes: List[int], isZeroed: bool) -> List[np.ndarray]:
 		biases = []
 		for layer_size in layer_sizes[1:]: # the first layer shouldn't have biases
-			random_biases = np.random.randint(0,10, size = (layer_size, 1))
+			if not isZeroed:
+				random_biases = np.random.randint(0,10, size = (layer_size, 1))
+			else:
+				random_biases = np.zeros((layer_size, 1))
 			biases.append(random_biases)
 		return biases
 
@@ -94,8 +108,11 @@ class Network:
 
 	def feedforward(self):
 		# set each layer of activations to non_lin(wa+b)
-		for i in range(1, len(self.activations)):
-			self.activations[i] = np.dot(self.weights[i], self.activations[i-1]) + self.biases[i] # Definitely test this, I haven't even looked through to see that the indices make sense
+		for i in range(len(self.activations)-1):
+			current_weight_shape = self.weights[i].shape
+			current_bias_shape = self.biases[i].shape
+			current_activation_shapes = self.activations[i].shape, self.activations[i+1].shape
+			self.activations[i+1] = np.dot(self.weights[i], self.activations[i]) + self.biases[i] # Definitely test this, I haven't even looked through to see that the indices make sense
 	
 	def backpropagate(self):
 		'''

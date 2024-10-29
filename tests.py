@@ -65,27 +65,27 @@ class Layers(bt.testGroup):
 		)
 	
 	def test_feed_forward_with_zero_weights(self):
-		network = Network((2,3,4),isZeroed=True)
+		network = Network([2,3,4],isZeroed=True)
 		data_handler = DataHandler()
 		sample = data_handler.read_samples()[0]
-		network.setInputLayer(sample.inputs)
+		network.set_input_layer(sample.inputs)
 		network.feedforward()
-		bt.assertEquals(network.layers[1].activations, np.array([[0.0],[0.0],[0.0]])) # cuz if w and b is 0, aw+b = 0 for all a
+		bt.assertEquals(network.activations[1], np.array([[0.0],[0.0],[0.0]])) # cuz if w and b is 0, aw+b = 0 for all a
 
 
 class NetworkTests(bt.testGroup):
 	def testInputLayerActivationTypes(self):
-		network = Network((1,2), isZeroed=True)
-		bt.assertEquals(network.layers[0].activations, np.array([[0.0]], dtype=float))
+		network = Network([1,2], isZeroed=True)
+		bt.assertEquals(network.activations[0], np.array([[0.0]], dtype=float))
 
 	def testHiddenLayerActivationTypes(self):
-		network = Network((1,2), isZeroed=True)
-		bt.assertEquals(network.layers[1].activations, np.array([[0.0], [0.0]], dtype=float))
+		network = Network([1,2], isZeroed=True)
+		bt.assertEquals(network.activations[1], np.array([[0.0], [0.0]], dtype=float))
 
 	def testHiddenLayerWeights(self):
-		network = Network((3,2), isZeroed=True)
+		network = Network([3,2], isZeroed=True)
 		bt.assertEquals(
-			network.layers[1].weights,
+			network.weights[0],
 			np.array([
 				[0.0, 0.0, 0.0],
 				[0.0, 0.0, 0.0]
@@ -93,39 +93,39 @@ class NetworkTests(bt.testGroup):
 		)
 
 	def testFeedForward(self):
-		network = Network((2,3,4,1),isZeroed=True)
+		network = Network([2,3,4,1],isZeroed=True)
 		data_handler = DataHandler()
 		sample = data_handler.read_samples()[0]
-		network.setInputLayer(sample.inputs)
+		network.set_input_layer(sample.inputs)
 		network.feedforward()
-		bt.assertEquals(network.layers[-1].activations, np.array([[0.0]])) # cuz if w and b is 0, aw+b = 0 for all a
+		bt.assertEquals(network.activations[-1], np.array([[0.0]])) # cuz if w and b is 0, aw+b = 0 for all a
 	
 	def testInputLayer(self):
-		network = Network((2,3,4), isZeroed=True)
+		network = Network([2,3,4], isZeroed=True)
 		data_handler = DataHandler()
 		sample = data_handler.read_samples()[0]
-		network.setInputLayer(sample.inputs)
-		bt.assertEquals(network.layers[0].activations, np.array(
+		network.set_input_layer(sample.inputs)
+		bt.assertEquals(network.activations[0], np.array(
 			[[0.8410888466588518],[0.1267111713120581]]
 		))
 
 	def testStoreBiases(self):
-		network = Network((2,5,1), isZeroed=True)
+		network = Network([2,5,1], isZeroed=True)
 		network.storeWeightsAndBiases()
-		new_network = Network((2,5,1), isZeroed=True)
+		new_network = Network([2,5,1], isZeroed=True)
 		new_network.loadWeightsAndBiases()
 		bt.assertEquals(
-			new_network.layers[1].biases,
+			new_network.biases[0],
 			np.array([[0.0],[0.0],[0.0],[0.0],[0.0]])
 		)
 
 	def testStoreWeights(self):
-		network = Network((2,5,1), isZeroed=True)
+		network = Network([2,5,1], isZeroed=True)
 		network.storeWeightsAndBiases()
-		new_network = Network((2,5,1), isZeroed=True)
+		new_network = Network([2,5,1], isZeroed=True)
 		new_network.loadWeightsAndBiases()
 		bt.assertEquals(
-			new_network.layers[1].weights,
+			new_network.weights[0],
 			np.array([[0.0, 0.0],[0.0, 0.0],[0.0, 0.0],[0.0, 0.0],[0.0, 0.0]])
 		)		
 
